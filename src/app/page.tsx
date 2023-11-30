@@ -1,5 +1,5 @@
-import Image from 'next/image'
+import InterviewHome from '@/components/home/InterviewHome'
 
 export default function Home() {
-  return <></>
+  return <InterviewHome />
 }

@@ -38,6 +38,7 @@ export default function RootLayout({
             <div className="text-3xl font-medium text-blue-400">
               면접 마스터
             </div>
+
             <div className="text-3xl font-medium">CBT 문제집</div>
           </div>
 
