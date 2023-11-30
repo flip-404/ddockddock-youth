@@ -272,7 +272,7 @@ export default function InterviewTable() {
           <th className="w-1/6">조회 수</th>
         </tr>
       </thead>
-      <tbody className="block max-h-96 overflow-y-scroll">
+      <tbody className="block max-h-96 overflow-y-scroll hide-scrollbar">
         {MockData.map((data, idx) => {
           if (idx > 29) return null
           return (
