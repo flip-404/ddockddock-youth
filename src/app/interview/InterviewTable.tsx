@@ -276,14 +276,21 @@ export default function InterviewTable() {
         {MockData.map((data, idx) => {
           if (idx > 29) return null
           return (
-            <tr
-              className="table cursor-pointer hover:text-amber-400 w-full"
-              onClick={() => router.push(`/interview/mine/${interviewId}`)}
-            >
+            <tr className="table w-full">
               <td className="text-center w-1/6">{idx + 1}</td>
-              <td className="w-2/6">{data.title}</td>
-              <td className="w-1/6">{data.author}</td>
-              <td className="w-1/6">{data.createdDate}</td>
+              <td
+                className="w-2/6 cursor-pointer hover:underline decoration-2 underline-offset-2"
+                onClick={() => router.push(`/interview/mine/${interviewId}`)}
+              >
+                {data.title}
+              </td>
+              <td
+                className="w-1/6 cursor-pointer hover:underline decoration-2 underline-offset-2"
+                onClick={() => router.push(`/interview/mine`)}
+              >
+                {data.author}
+              </td>
+              <td className="w-1/6 ">{data.createdDate}</td>
               <td className="w-1/6">{data.views}</td>
             </tr>
           )
