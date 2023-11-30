@@ -8,7 +8,7 @@ export default function InterviewWorkBook() {
 
   return (
     <div className="flex flex-col justify-center items-center gap-10 w-full h-full">
-      <div className="flex gap-3">
+      <div className="flex justify-evenly gap-3">
         <Image
           src="/FrontEnd_Img.jpg"
           alt="FrontEnd Image"
@@ -28,10 +28,12 @@ export default function InterviewWorkBook() {
             전반적인 프론트엔드 기술에 대한 질문과 그에 대한 답변을 모았습니다.
           </div>
           <div className="flex gap-3">
+            <div className="bg-fuchsia-400 text-white rounded px-2 font-semibold cursor-pointer">
+              작성: 마녀
+            </div>
             <div>총 18문제</div>
             <div>2023.11.30 작성</div>
             <div>302 추천</div>
-            <div>28 댓글</div>
           </div>
         </div>
       </div>
