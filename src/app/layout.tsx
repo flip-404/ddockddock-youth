@@ -25,13 +25,21 @@ export default function RootLayout({
             <Link href="/" className="text-3xl font-bold text-blue-400">
               똑똑한 청년.
             </Link>
-
-            <Link
-              href="/login"
-              className="flex flex-col justify-end text-base font-semibold"
-            >
-              로그인 | 회원가입
-            </Link>
+            <div className="flex justify-center items-center gap-2">
+              <Link
+                href="/login"
+                className="flex flex-col justify-end text-base font-semibold"
+              >
+                로그인
+              </Link>
+              |
+              <Link
+                href="/signup"
+                className="flex flex-col justify-end text-base font-semibold"
+              >
+                회원가입
+              </Link>
+            </div>
           </div>
 
           <div className="flex gap-4 w-full md:w-4/5 lg:w-1/2">

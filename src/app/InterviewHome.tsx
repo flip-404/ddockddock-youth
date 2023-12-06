@@ -1,4 +1,8 @@
+'use client'
+
+import fetcher from '@/libs/server/fetcher'
 import Link from 'next/link'
+import useSWR from 'swr'
 
 const MockData1 = [
   {
@@ -50,6 +54,9 @@ const user = {
 }
 
 export default function InterviewHome() {
+  const { data } = useSWR('/api/user', fetcher)
+  console.log('data', data)
+
   return (
     <div className="flex gap-7 flex-col w-full h-full">
       <Link href="/interview" className="flex gap-2 hover:text-orange-500">
@@ -69,13 +76,14 @@ export default function InterviewHome() {
           </tr>
         </thead>
         <tbody>
-          {MockData1.map((data) => (
-            <tr className="cursor-pointer hover:text-amber-400">
+          {MockData1.map((mockdata, idx) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <tr className="cursor-pointer hover:text-amber-400" key={idx}>
               <td>1</td>
-              <td>{data.title}</td>
-              <td>{data.author}</td>
-              <td>{data.createdDate}</td>
-              <td>{data.views}</td>
+              <td>{mockdata.title}</td>
+              <td>{mockdata.author}</td>
+              <td>{mockdata.createdDate}</td>
+              <td>{mockdata.views}</td>
             </tr>
           ))}
         </tbody>
@@ -100,13 +108,14 @@ export default function InterviewHome() {
           </tr>
         </thead>
         <tbody>
-          {MockData1.map((data) => (
-            <tr className="cursor-pointer hover:text-amber-400">
+          {MockData1.map((mockdata, idx) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <tr className="cursor-pointer hover:text-amber-400" key={idx}>
               <td>1</td>
-              <td>{data.title}</td>
-              <td>{data.author}</td>
-              <td>{data.createdDate}</td>
-              <td>{data.views}</td>
+              <td>{mockdata.title}</td>
+              <td>{mockdata.author}</td>
+              <td>{mockdata.createdDate}</td>
+              <td>{mockdata.views}</td>
             </tr>
           ))}
         </tbody>
