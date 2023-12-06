@@ -1,3 +1,5 @@
+// 로그아웃 API POST
+
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET() {
