@@ -1,5 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
-
 import type { UseFormRegisterReturn } from 'react-hook-form'
 
 type InputProps = {
@@ -17,7 +15,7 @@ export default function Input({
   kind,
   register,
   type,
-  required,
+  required = false,
 }: InputProps) {
   return kind === 'signup' ? (
     <label htmlFor={name} className="flex flex-col">
@@ -40,8 +38,4 @@ export default function Input({
       {...register}
     />
   )
-}
-
-Input.defaultProps = {
-  required: false,
 }
