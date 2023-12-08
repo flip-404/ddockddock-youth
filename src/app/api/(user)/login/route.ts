@@ -1,11 +1,10 @@
 // 로그인 API POST
 
 import client from '@/libs/server/client'
-import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET() {
   const data = {}
-  return NextResponse.json({ data })
+  return Response.json({ data })
 }
 
 // export async function POST(request: NextRequest) {

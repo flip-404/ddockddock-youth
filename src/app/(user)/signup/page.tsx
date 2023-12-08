@@ -4,6 +4,8 @@ import { useRef } from 'react'
 import { FieldErrors, useForm } from 'react-hook-form'
 import Input from '@/components/input'
 import ErrorMessage from '@/components/errorMessage'
+import useSWR from 'swr'
+// import checkExists from '@/app/api/(user)/exists'
 
 export interface SignUpForm {
   email: string
@@ -18,15 +20,39 @@ export default function SignUp() {
     register,
     handleSubmit,
     watch,
+    setError,
     formState: { errors },
   } = useForm<SignUpForm>({ mode: 'onBlur' })
 
-  // console.log(watch())
   const passwordRef = useRef<string | null>(null)
   passwordRef.current = watch('password')
 
-  const onValid = (data: SignUpForm) => {
-    console.log('onValid', data)
+  const checkExists = async (value: string, type: string) => {
+    const response = await fetch(`/api/exists?${type}=` + value)
+    const {
+      data: { exists },
+    } = await response.json()
+
+    return !exists
+  }
+
+  const onValid = async (formData: SignUpForm) => {
+    const response = await fetch('/api/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    })
+
+    const {
+      success,
+      message,
+      error: { code },
+    } = await response.json()
+
+    if (!success) setError(code, { message })
+    // 모달 띄워주고, 로그인화면으로 라우팅
   }
 
   const onInValid = (InValidError: FieldErrors) => {
@@ -56,6 +82,12 @@ export default function SignUp() {
             pattern: {
               value: /^\S+@\S+$/i,
               message: '이메일의 형식에 맞게 입력해 주세요',
+            },
+            validate: async (value) => {
+              return (
+                (await checkExists(value, 'email')) ||
+                '이미 존재하는 이메일입니다'
+              )
             },
           })}
           required
@@ -93,6 +125,9 @@ export default function SignUp() {
           type="password"
           register={register('passwordCheck', {
             required: '비밀번호를 한번 더 입력해 주세요',
+            validate: (passwordCheck) =>
+              passwordCheck === passwordRef.current ||
+              '비밀번호가 일치하지 않습니다',
           })}
           required
         />
@@ -107,6 +142,12 @@ export default function SignUp() {
           register={register('nickname', {
             required: '닉네임을 입력해 주세요',
             maxLength: { value: 10, message: '10자 이하로 입력해 주세요' },
+            validate: async (value) => {
+              return (
+                (await checkExists(value, 'nickname')) ||
+                '이미 존재하는 닉네임입니다'
+              )
+            },
           })}
           required
         />
