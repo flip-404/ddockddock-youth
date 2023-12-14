@@ -2,8 +2,8 @@
 
 import { useRef } from 'react'
 import { FieldErrors, useForm } from 'react-hook-form'
-import Input from '@/components/input'
-import ErrorMessage from '@/components/errorMessage'
+import Input from '@/app/components/input'
+import ErrorMessage from '@/app/components/errorMessage'
 import useSWR from 'swr'
 // import checkExists from '@/app/api/(user)/exists'
 
@@ -52,11 +52,6 @@ export default function SignUp() {
     } = await response.json()
 
     if (!success) setError(code, { message })
-    // 모달 띄워주고, 로그인화면으로 라우팅
-  }
-
-  const onInValid = (InValidError: FieldErrors) => {
-    console.log('onInValid', InValidError)
   }
 
   return (
@@ -70,7 +65,7 @@ export default function SignUp() {
 
       <form
         className="flex flex-col gap-1 w-1/2"
-        onSubmit={handleSubmit(onValid, onInValid)}
+        onSubmit={handleSubmit(onValid)}
       >
         <Input
           label="이메일 (아이디)"
