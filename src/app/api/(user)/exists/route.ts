@@ -1,4 +1,4 @@
-import client from '@/libs/server/client'
+import client from '@/app/libs/server/client'
 
 export async function GET(request: Request) {
   const url = new URL(request.url)

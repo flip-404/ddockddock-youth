@@ -1,22 +1,32 @@
 // 로그인 API POST
 
-import client from '@/libs/server/client'
+import { signJwtAccessToken } from '@/app/libs/jwt'
+import client from '@/app/libs/server/client'
+import * as bcrypt from 'bcrypt'
 
-export async function GET() {
-  const data = {}
-  return Response.json({ data })
+interface RequestBody {
+  email: string
+  password: string
 }
 
-// export async function POST(request: NextRequest) {
-//   const { email } = request.body
-//   if(email){
-//     const user = await client.user.findUnique({
-//       where:{
-//         email
-//       }
-//     })
-//   }
+export async function POST(request: Request) {
+  const body: RequestBody = await request.json()
 
-//   const res = await req uest.json()
-//   return NextResponse.json({ res })
-// }
+  const user = await client.user.findFirst({
+    where: {
+      email: body.email,
+    },
+  })
+
+  if (user && (await bcrypt.compare(body.password, user.password))) {
+    const { password, ...userWithoutPass } = user
+
+    const accessToken = signJwtAccessToken(userWithoutPass)
+    const result = {
+      ...userWithoutPass,
+      accessToken,
+    }
+
+    return new Response(JSON.stringify(result))
+  } else return new Response(JSON.stringify(null))
+}

@@ -1,36 +1,34 @@
 // 회원가입 API POST
 
-import client from '@/libs/server/client'
+import client from '@/app/libs/server/client'
+import * as bcrypt from 'bcrypt'
+
+interface RequestBody {
+  nickname: string
+  email: string
+  password: string
+  description: string
+}
 
 export async function POST(request: Request) {
-  // 이메일 있는지 확인, 닉네임 있는지 확인 o
-  // 이거 API를 따로 만들어서 validate로 지정하는게 나을듯
-  const { email, nickname } = await request.json()
+  const body: RequestBody = await request.json()
 
-  const exists = await client.user.findFirst({
-    where: { OR: [{ email }, { nickname }] },
+  const user = await client.user.create({
+    data: {
+      email: body.email,
+      password: await bcrypt.hash(body.password, 10),
+      nickname: body.nickname,
+      description: body.description,
+    },
   })
 
-  if (exists?.email === email)
-    return Response.json({
-      success: false,
-      message: '이미 존재하는 이메일입니다.',
-      error: {
-        code: 'email',
-      },
-    })
-  else if (exists?.nickname === nickname)
-    return Response.json({
-      success: false,
-      message: '이미 존재하는 닉네임입니다.',
-      error: {
-        code: 'nickname',
-      },
-    })
-  else
-    return Response.json({
+  const { ...result } = user
+  return new Response(
+    JSON.stringify({
       success: true,
-      message: '이미 존재하는 이메일입니다.',
+      message: '회원가입 완료',
       error: null,
-    })
+      data: result,
+    }),
+  )
 }
