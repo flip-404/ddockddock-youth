@@ -1,14 +1,20 @@
+'use client'
+
 import Link from 'next/link'
 import InterviewTable from '../InterviewTable'
+import { useSession } from 'next-auth/react'
 
 // 현재 mine 이지만, 벨로그처럼 유저아이디로 접근가능하도록 만들어야 한다.
 
 export default function Mine() {
+  const { data: session } = useSession()
+  const user = session?.user
+
   return (
     <div className="flex flex-col justify-center gap-7 w-full h-full">
       <div className="flex justify-between gap-2">
         <div className="flex items-center font-bold text-4xl">
-          <span className="text-blue-500">[MINE]</span>님이 제작한 문제집
+          <p className="text-blue-500">[{user?.nickname}]</p>님이 제작한 문제집
         </div>
         <Link
           href="/interview/write"

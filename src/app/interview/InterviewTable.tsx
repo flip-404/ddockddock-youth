@@ -276,7 +276,7 @@ export default function InterviewTable() {
         {MockData.map((data, idx) => {
           if (idx > 29) return null
           return (
-            <tr className="table w-full">
+            <tr className="table w-full" key={idx}>
               <td className="text-center w-1/6">{idx + 1}</td>
               <td
                 className="w-2/6 cursor-pointer hover:underline decoration-2 underline-offset-2"
