@@ -4,12 +4,16 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import Providers from './components/Providers'
 const inter = Inter({ subsets: ['latin'] })
+import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import { getServerSession } from 'next-auth/next'
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const session = await getServerSession(authOptions)
+
   return (
     <html lang="en">
       <head />
@@ -31,7 +35,7 @@ export default function RootLayout({
           </div>
 
           <div className="border p-6 rounded-2xl shadow-lg bg-slate-50 w-full h-3/4 md:w-4/5 md:h-3/4 lg:w-1/2 lg:h-3/4">
-            <Providers>{children}</Providers>
+            <Providers session={session}>{children}</Providers>
           </div>
         </div>
       </body>

@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import Image from 'next/image'
+import Modal from '@/app/components/modal'
 
 type ModalState = {
   isOpen: boolean

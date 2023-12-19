@@ -1,8 +1,9 @@
 'use client'
 
+import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 
-type WorkBookInfo = {
+type WorkbookInfo = {
   title: string
   description: string
 }
@@ -13,7 +14,9 @@ type Problem = {
 }
 
 export default function WriteHome() {
-  const [workBookInfo, setWorkBookInfo] = useState<WorkBookInfo>({
+  const { data: session } = useSession()
+  const user = session?.user
+  const [workbookInfo, setWorkbookInfo] = useState<WorkbookInfo>({
     title: '',
     description: '',
   })
@@ -22,10 +25,10 @@ export default function WriteHome() {
   ])
 
   const handleInfoChange = (value: string, type: 'title' | 'description') => {
-    const newWorkBookInfo = { ...workBookInfo }
-    if (type === 'title') newWorkBookInfo.title = value
-    else newWorkBookInfo.description = value
-    setWorkBookInfo(newWorkBookInfo)
+    const newWorkbookInfo = { ...workbookInfo }
+    if (type === 'title') newWorkbookInfo.title = value
+    else newWorkbookInfo.description = value
+    setWorkbookInfo(newWorkbookInfo)
   }
 
   const handleProblemChange = (
@@ -44,7 +47,26 @@ export default function WriteHome() {
     setProblems([...problems, { question: '', answer: '' }])
   }
 
-  const handdleClickCreate = () => {}
+  const handdleClickCreate = async () => {
+    const response = await fetch('/api/workbook', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: user?.id,
+        workbookInfo,
+      }),
+    })
+
+    console.log(response)
+
+    // const {
+    //   success,
+    //   message,
+    //   error: { code },
+    // } = await response.json()
+  }
 
   return (
     <div className="flex flex-col gap-4 h-full">

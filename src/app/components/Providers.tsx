@@ -5,9 +5,10 @@ import React, { ReactNode } from 'react'
 
 interface Props {
   children: ReactNode
+  session: any
 }
-function Providers({ children }: Props) {
-  return <SessionProvider>{children}</SessionProvider>
+function Providers({ children, session }: Props) {
+  return <SessionProvider session={session}>{children}</SessionProvider>
 }
 
 export default Providers

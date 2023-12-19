@@ -42,10 +42,12 @@ model Workbook {
   author      User      @relation(fields: [authorId], references: [id])
   authorId    Int
   problems    Problem[]
+  createdAt   DateTime  @default(now())
 
   @@index([authorId])
 }
 
+// 스키마 이름 수정 필요
 model Problem {
   id         Int      @id @default(autoincrement())
   question   String

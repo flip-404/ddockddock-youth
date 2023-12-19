@@ -1,24 +1,40 @@
 // 문제집 API
 
-import { signJwtAccessToken } from '@/app/libs/jwt'
 import client from '@/app/libs/server/client'
-import * as bcrypt from 'bcrypt'
 
 interface RequestBody {
   email: string
   password: string
 }
 
-export async function GET(request: Request) {}
+export async function GET(request: Request) {
+  const url = new URL(request.url)
+  const userId = url.searchParams.get('userId')
+  const workbookId = url.searchParams.get('workbookId')
 
-export async function POST(request: Request) {
-  const body: RequestBody = await request.json()
-
-  //   const user = await client.user.create({
-  //     data: {
-  //       name: body.name,
-  //       email: body.email,
-  //       password: await bcrypt.hash(body.password, 10), // 바뀐 부분
-  //     },
-  //   })
+  if (userId) {
+    const user = await client.user.findUnique({
+      where: { id: +userId },
+      include: {
+        WorkBooks: {
+          include: { author: true },
+        },
+      },
+    })
+    return new Response(JSON.stringify({ workbooks: user?.WorkBooks }))
+  } else if (workbookId) {
+    const workbook = await client.workbook.findUnique({
+      where: { id: +workbookId },
+      include: { problems: true },
+    })
+    return new Response(JSON.stringify({ workbook }))
+  } else {
+    const workbooks = await client.workbook.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+      include: { author: true },
+    })
+    return new Response(JSON.stringify({ workbooks }))
+  }
 }
