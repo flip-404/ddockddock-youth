@@ -1,11 +1,9 @@
 'use client'
 
-import fetcher from '@/app/libs/server/fetcher'
 import Link from 'next/link'
 import { signOut, useSession } from 'next-auth/react'
 import useSWR from 'swr'
 import WorkbookTable from './components/workbookTable'
-import { useEffect } from 'react'
 
 export default function Home() {
   const { data: session } = useSession()
@@ -53,7 +51,7 @@ export default function Home() {
       </div>
       <div className="flex flex-col flex-1 overflow-hidden">
         <div className="flex flex-col h-1/2 overflow-hidden gap-2 mt-2 rounded-xl">
-          <Link href="/interview" className="flex gap-2 hover:text-orange-500">
+          <Link href="/workbook" className="flex gap-2 hover:text-orange-500">
             <div className="font-bold text-4xl">공유 문제집</div>
             <div className="flex flex-col justify-end">
               누군가 정성껏 제작한 문제집을 풀어보세요!
@@ -67,8 +65,7 @@ export default function Home() {
         </div>
         <div className="flex flex-col h-1/2 overflow-hidden gap-2 mt-2 rounded-xl">
           <Link
-            href={'/interview'}
-            // href={`/interview/${user.id}`}
+            href={`/activity/${session?.user.nickname}`}
             className="flex gap-2 hover:text-orange-500"
           >
             <div className="font-bold text-4xl">나만의 문제집</div>

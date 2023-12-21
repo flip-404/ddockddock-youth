@@ -1,31 +1,46 @@
 import { PrismaClient } from '@prisma/client'
-
 const prisma = new PrismaClient()
 
 async function seed() {
-  const workbooks = await prisma.workbook.findMany()
+  // Step 1: Create 5 users
+  const users = []
+  for (let i = 0; i < 5; i++) {
+    const user = await prisma.user.create({
+      data: {
+        email: `user${i + 1}@example.com`,
+        password: 'password123', // You should handle password securely in a real application
+        nickname: `user${i + 1}`,
+        description: `Description for user ${i + 1}`,
+      },
+    })
+    users.push(user)
+  }
 
-  await Promise.all(
-    workbooks.map(async (workbook) => {
-      // 무작위로 생성된 날짜를 사용하여 createdAt을 업데이트
-      const randomDate = getRandomDate(
-        new Date(2021, 0, 1),
-        new Date(2023, 11, 31),
-      )
-      await prisma.workbook.update({
-        where: { id: workbook.id },
-        data: { createdAt: randomDate },
+  // Step 2: Create 10 workbooks for each user
+  for (const user of users) {
+    for (let i = 0; i < 10; i++) {
+      const workbook = await prisma.workbook.create({
+        data: {
+          title: `Workbook ${i + 1} for ${user.nickname}`,
+          description: `Description for Workbook ${i + 1}`,
+          authorId: user.id,
+        },
       })
-    }),
-  )
-}
 
-// 무작위 날짜를 생성하는 함수
-function getRandomDate(startDate: Date, endDate: Date): Date {
-  const startMillis = startDate.getTime()
-  const endMillis = endDate.getTime()
-  const randomMillis = startMillis + Math.random() * (endMillis - startMillis)
-  return new Date(randomMillis)
+      // Step 3: Create 10 problems for each workbook
+      for (let j = 0; j < 10; j++) {
+        await prisma.problem.create({
+          data: {
+            question: `Question ${j + 1} in Workbook ${i + 1}`,
+            answer: `Answer ${j + 1}`,
+            workbookId: workbook.id,
+          },
+        })
+      }
+    }
+  }
+
+  console.log('Seed completed')
 }
 
 seed()

@@ -6,10 +6,13 @@ type ModalProps = {
   onClose: () => void
   type: string | null
   desc: string | null
+  workbookId: number
 }
 
-export default function Modal({ onClose, type, desc }: ModalProps) {
+export default function Modal({ onClose, type, desc, workbookId }: ModalProps) {
   const router = useRouter()
+
+  console.log('workbookId', workbookId)
 
   return (
     <>
@@ -45,14 +48,14 @@ export default function Modal({ onClose, type, desc }: ModalProps) {
           <button
             type="button"
             className="rounded bg bg-indigo-400 text-white font-semibold py-4 px-6 hover:bg-indigo-500"
-            onClick={() => router.push('/interview/mine/id/test')}
+            onClick={() => router.push(`/workbook/exam/${workbookId}`)}
           >
             자습서
           </button>
           <button
             type="button"
             className="rounded bg-emerald-400 text-white font-semibold py-4 px-6 hover:bg-emerald-500"
-            onClick={() => router.push('/interview/mine/id/test')}
+            onClick={() => router.push(`/workbook/exam/${workbookId}`)}
           >
             실전 테스트
           </button>

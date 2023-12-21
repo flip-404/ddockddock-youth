@@ -1,7 +1,9 @@
 'use client'
 
+import BackButton from '@/app/components/backButton'
 import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
+import CreateModal from './CreateModal'
 
 type WorkbookInfo = {
   title: string
@@ -14,6 +16,7 @@ type Problem = {
 }
 
 export default function WriteHome() {
+  const [modalOpen, setModalOpen] = useState(false)
   const { data: session } = useSession()
   const user = session?.user
   const [workbookInfo, setWorkbookInfo] = useState<WorkbookInfo>({
@@ -54,22 +57,19 @@ export default function WriteHome() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        userId: user?.id,
+        author: user,
         workbookInfo,
+        problems,
       }),
     })
 
+    setModalOpen(true)
     console.log(response)
-
-    // const {
-    //   success,
-    //   message,
-    //   error: { code },
-    // } = await response.json()
   }
 
   return (
     <div className="flex flex-col gap-4 h-full">
+      <BackButton />
       <div className="flex justify-between px-4">
         <span className="text-3xl font-semibold">
           나만의 면접 문제집 만들기
@@ -130,6 +130,7 @@ export default function WriteHome() {
           질문 추가
         </button>
       </div>
+      {modalOpen && <CreateModal />}
     </div>
   )
 }

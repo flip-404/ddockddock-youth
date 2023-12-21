@@ -4,6 +4,10 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import Image from 'next/image'
 import Modal from '@/app/components/modal'
+import useSWR from 'swr'
+import type { Workbook } from '@/types/types'
+import { formatDate } from '@/app/utils/formatData'
+import BackButton from '@/app/components/backButton'
 
 type ModalState = {
   isOpen: boolean
@@ -11,8 +15,23 @@ type ModalState = {
   desc: string | null
 }
 
-export default function InterviewWorkBook() {
+type WorkbookInfoProps = {
+  params: { workbookId: string }
+}
+
+export default function WorkbookInfo({
+  params: { workbookId },
+}: WorkbookInfoProps) {
+  const url = workbookId ? `/api/workbook?workbookId=${workbookId}` : null
   const router = useRouter()
+  const { data: { workbook } = { workbook: null }, isLoading } = useSWR(
+    url,
+    async (url: string) => {
+      const response = await fetch(url)
+      const data = await response.json()
+      return data as { workbook: Workbook }
+    },
+  )
 
   const [modalState, setModalState] = useState<ModalState>({
     isOpen: false,
@@ -34,6 +53,7 @@ export default function InterviewWorkBook() {
 
   return (
     <div className="flex flex-col justify-center items-center gap-10 w-full h-full relative">
+      <BackButton />
       <div className="flex justify-evenly gap-3">
         <Image
           src="/FrontEnd_Img.jpg"
@@ -43,23 +63,30 @@ export default function InterviewWorkBook() {
           className="w-1/3 rounded"
         />
         <div className="flex flex-col justify-evenly gap-2 text-left ">
-          <div className="flex justify-between">
+          <div className="flex justify-between items-center">
             <div>
               <span>개발 · 프로그래밍</span> <span>{'>'} 프론트엔드</span>
             </div>
-            <div>즐겨찾기</div>
+            <button className="flex text-xs p-1 border-2 rounded border-yellow-400 cursor-pointer hover:bg-yellow-400 hover:text-white">
+              즐겨찾기
+            </button>
           </div>
-          <h1 className="text-3xl font-bold">[프론트엔드 기술 면접] 마녀</h1>
-          <div>
-            전반적인 프론트엔드 기술에 대한 질문과 그에 대한 답변을 모았습니다.
-          </div>
-          <div className="flex gap-3">
-            <div className="bg-fuchsia-400 text-white rounded px-2 font-semibold cursor-pointer">
-              작성: 마녀
-            </div>
-            <div>총 18문제</div>
-            <div>2023.11.30 작성</div>
-            <div>302 추천</div>
+          <h1 className="text-3xl font-bold">{workbook?.title}</h1>
+          <div>{workbook?.description}</div>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => {
+                router.push(`/activity/${workbook?.author.nickname}`)
+              }}
+              className="bg-fuchsia-400 text-white rounded px-2 font-semibold cursor-pointer"
+            >
+              작성: {workbook?.author.nickname}
+            </button>
+            <div>총 {workbook?.problems.length}문제</div>
+            <div>{formatDate(workbook?.createdAt!)} 작성</div>
+            <button className="flex text-xs p-1 border-2 rounded border-sky-400 cursor-pointer hover:bg-sky-400 hover:text-white">
+              302 추천
+            </button>
           </div>
         </div>
       </div>
@@ -67,8 +94,6 @@ export default function InterviewWorkBook() {
         <button
           type="button"
           className="rounded bg-indigo-400 text-white font-semibold py-4 px-6 hover:bg-indigo-500"
-          // onClick={() => router.push('/interview/mine/id/test')}
-          // onClick으로 라우팅보단.. SPA로 만드는게 나을듯, 나중에 고려
           onClick={() => handdleOnModal('SEQUENCE', '순서대로')}
         >
           순서대로 풀기
@@ -87,6 +112,7 @@ export default function InterviewWorkBook() {
           type={modalState.type}
           desc={modalState.desc}
           onClose={handdleOffModal}
+          workbookId={+workbookId}
         />
       )}
     </div>

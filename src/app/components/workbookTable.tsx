@@ -33,14 +33,14 @@ export default function WorkbookTable({
                 <td className="text-center w-1/6">{idx + 1}</td>
                 <td
                   className="w-2/6 cursor-pointer hover:underline hover:text-indigo-400 decoration-2 underline-offset-2 "
-                  // onClick={() => router.push(`/interview/mine/${interviewId}`)}
+                  onClick={() => router.push(`/workbook/info/${data.id}`)}
                 >
                   {data.title}
                 </td>
                 <td
                   className="w-1/6 cursor-pointer hover:underline hover:text-cyan-300 decoration-2 underline-offset-2"
                   onClick={() =>
-                    router.push(`/profile/${data.author.nickname}}`)
+                    router.push(`/activity/${data.author.nickname}`)
                   }
                 >
                   {data.author.nickname}

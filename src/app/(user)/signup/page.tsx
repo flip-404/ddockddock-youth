@@ -45,13 +45,8 @@ export default function SignUp() {
       body: JSON.stringify(formData),
     })
 
-    const {
-      success,
-      message,
-      error: { code },
-    } = await response.json()
-
-    if (!success) setError(code, { message })
+    // 회원가입 완료
+    const res = await response.json()
   }
 
   return (
