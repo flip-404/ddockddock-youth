@@ -52,7 +52,7 @@ export default function Activity({ params: { nickname } }: ActivityProps) {
             workbooks={personalWorkbook?.workbooks || []}
           />
         </div>
-        <div className="flex font-bold text-2xl">최근 풀이한 문제집</div>
+        <div className="flex font-bold text-2xl">즐겨찾기한 문제집</div>
         <div className="overflow-hidden">
           <WorkbookTable
             isLoading={personalWbLoading}
