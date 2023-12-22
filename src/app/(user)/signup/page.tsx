@@ -1,10 +1,12 @@
 'use client'
 
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { FieldErrors, useForm } from 'react-hook-form'
 import Input from '@/app/components/input'
 import ErrorMessage from '@/app/components/errorMessage'
 import useSWR from 'swr'
+import { useRouter } from 'next/navigation'
+import NotificationModal from '@/app/components/NotificationModal'
 // import checkExists from '@/app/api/(user)/exists'
 
 export interface SignUpForm {
@@ -23,7 +25,8 @@ export default function SignUp() {
     setError,
     formState: { errors },
   } = useForm<SignUpForm>({ mode: 'onBlur' })
-
+  const [modalOpen, setModalOpen] = useState(false)
+  const router = useRouter()
   const passwordRef = useRef<string | null>(null)
   passwordRef.current = watch('password')
 
@@ -37,7 +40,7 @@ export default function SignUp() {
   }
 
   const onValid = async (formData: SignUpForm) => {
-    const response = await fetch('/api/register', {
+    await fetch('/api/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -45,8 +48,11 @@ export default function SignUp() {
       body: JSON.stringify(formData),
     })
 
-    // 회원가입 완료
-    const res = await response.json()
+    setModalOpen(true)
+  }
+
+  const handdleModalClose = () => {
+    router.back()
   }
 
   return (
@@ -158,6 +164,12 @@ export default function SignUp() {
           </button>
         </div>
       </form>
+      {modalOpen && (
+        <NotificationModal
+          onClose={handdleModalClose}
+          label="회원가입이 완료 되었습니다."
+        />
+      )}
     </div>
   )
 }

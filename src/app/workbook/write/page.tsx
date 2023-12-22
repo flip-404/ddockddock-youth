@@ -3,7 +3,8 @@
 import BackButton from '@/app/components/backButton'
 import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
-import CreateModal from './CreateModal'
+import NotificationModal from '../../components/NotificationModal'
+import { useRouter } from 'next/navigation'
 
 type WorkbookInfo = {
   title: string
@@ -18,6 +19,7 @@ type Problem = {
 export default function WriteHome() {
   const [modalOpen, setModalOpen] = useState(false)
   const { data: session } = useSession()
+  const router = useRouter()
   const user = session?.user
   const [workbookInfo, setWorkbookInfo] = useState<WorkbookInfo>({
     title: '',
@@ -64,7 +66,10 @@ export default function WriteHome() {
     })
 
     setModalOpen(true)
-    console.log(response)
+  }
+
+  const handdleModalClose = () => {
+    router.back()
   }
 
   return (
@@ -130,7 +135,12 @@ export default function WriteHome() {
           질문 추가
         </button>
       </div>
-      {modalOpen && <CreateModal />}
+      {modalOpen && (
+        <NotificationModal
+          onClose={handdleModalClose}
+          label="문제집이 생성 되었습니다."
+        />
+      )}
     </div>
   )
 }
