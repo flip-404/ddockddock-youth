@@ -1,8 +1,6 @@
-// CommentSection.js
-
 import React, { ChangeEvent, useState } from 'react'
 
-const Comment = () => {
+const CommentSection = ({}) => {
   const comments = [
     { id: 0, text: '냠냠', user: '고양이', createAt: '2023.12.20' },
     { id: 1, text: '냠ㄴㄴㄴ냠ㄴㄴ', user: '고양이', createAt: '2023.12.20' },
@@ -71,4 +69,4 @@ const Comment = () => {
   )
 }
 
-export default Comment
+export default CommentSection

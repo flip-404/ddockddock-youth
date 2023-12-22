@@ -35,7 +35,7 @@ export async function GET(request: Request) {
   } else if (workbookId) {
     const workbook = await client.workbook.findUnique({
       where: { id: +workbookId },
-      include: { problems: true, author: true },
+      include: { problems: { include: { comments: true } }, author: true },
     })
 
     return new Response(JSON.stringify({ workbook }))
