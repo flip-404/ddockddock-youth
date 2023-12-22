@@ -22,6 +22,21 @@ model User {
   updatedAt   DateTime   @updatedAt
   tokens      Token[]
   workbooks   Workbook[]
+  comments    Comment[]
+  Bookmark    Bookmark[]
+}
+
+model Bookmark {
+  id         Int      @id @default(autoincrement())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int
+  workbook   Workbook @relation(fields: [workbookId], references: [id])
+  workbookId Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([userId])
+  @@index([workbookId])
 }
 
 model Token {
@@ -35,25 +50,52 @@ model Token {
   @@index([userId])
 }
 
+model Category {
+  id        Int        @id @default(autoincrement())
+  name      String
+  workbooks Workbook[]
+}
+
 model Workbook {
-  id          Int       @id @default(autoincrement())
+  id          Int        @id @default(autoincrement())
   title       String
   description String?
-  author      User      @relation(fields: [authorId], references: [id])
+  author      User       @relation(fields: [authorId], references: [id])
   authorId    Int
   problems    Problem[]
-  createdAt   DateTime  @default(now())
+  createdAt   DateTime   @default(now())
+  category    Category?  @relation(fields: [categoryId], references: [id])
+  categoryId  Int?
+  Bookmark    Bookmark[]
 
   @@index([authorId])
+  @@index([categoryId])
 }
 
 // 스키마 이름 수정 필요
 model Problem {
-  id         Int      @id @default(autoincrement())
+  id         Int       @id @default(autoincrement())
   question   String
   answer     String
-  workbook   Workbook @relation(fields: [workbookId], references: [id])
+  workbook   Workbook  @relation(fields: [workbookId], references: [id])
   workbookId Int
+  comments   Comment[]
 
   @@index([workbookId])
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  problem   Problem  @relation(fields: [problemId], references: [id])
+  problemId Int
+  likes     Int      @default(0)
+  dislikes  Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([problemId])
 }
