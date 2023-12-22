@@ -5,17 +5,15 @@ import type { Workbook } from '@/types/types'
 import { useEffect, useState } from 'react'
 import cls from '@/app/utils/cls'
 import TabButton from './TabButton'
-import Comment from './Comment'
+import CommentSection from './CommentSection'
 import BackButton from '@/app/components/backButton'
 
 const ANSWER = 0
 const AI_ANSWER = 1
 const COMMENT = 2
 
-type TabType = 0 | 1 | 2
-
 type Tab = {
-  type: TabType
+  type: number
   isOpen: boolean
 }
 
@@ -38,6 +36,8 @@ export default function Exam({ params: { workbookId } }: ExamProps) {
     },
   )
 
+  console.log('workbook', workbook)
+
   const handdlePrev = () => {
     if (currentIndex > 0) setCurrentIndex(currentIndex - 1)
   }
@@ -47,7 +47,7 @@ export default function Exam({ params: { workbookId } }: ExamProps) {
       setCurrentIndex(currentIndex + 1)
   }
 
-  const handdleTabClick = (tabType: 0 | 1 | 2) => {
+  const handdleTabClick = (tabType: number) => {
     setTab({ type: tabType, isOpen: false })
   }
 
@@ -90,7 +90,7 @@ export default function Exam({ params: { workbookId } }: ExamProps) {
         </div>
         {tab.type === COMMENT ? (
           <div className="flex w-3/4 h-2/5 overflow-y-scroll">
-            <Comment />
+            <CommentSection />
           </div>
         ) : (
           <div className="flex w-3/4 h-2/5 overflow-y-scroll">
