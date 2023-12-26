@@ -1,27 +1,43 @@
-import React, { ChangeEvent, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
+import type { Comment, Problem } from '@/types/types'
+import { formatDate } from '@/app/utils/formatData'
+import { useSession } from 'next-auth/react'
+import useSWR from 'swr'
 
-const CommentSection = ({}) => {
-  const comments = [
-    { id: 0, text: '냠냠', user: '고양이', createAt: '2023.12.20' },
-    { id: 1, text: '냠ㄴㄴㄴ냠ㄴㄴ', user: '고양이', createAt: '2023.12.20' },
-    { id: 2, text: '냠냠ㅁㄴㅇㅁㄴㅇ', user: '고양이', createAt: '2023.12.20' },
-    { id: 3, text: 'ㄴㅁㅇㅁㄴㅇ냠냠', user: '고양이', createAt: '2023.12.20' },
-    { id: 4, text: '냠냠ㅁㄴㅇㅁㄴㅇ', user: '고양이', createAt: '2023.12.20' },
-    { id: 5, text: '냠ㅁㄴㅇㅁㄴㅇ냠', user: '고양이', createAt: '2023.12.20' },
-    { id: 6, text: 'ㄴㅁㅇ123냠냠', user: '고양이', createAt: '2023.12.20' },
-    { id: 7, text: '냠냠', user: '고양이', createAt: '2023.12.20' },
-  ]
+type CommentSectionProps = {
+  problem: Problem
+  comments: Comment[]
+}
+
+const CommentSection = ({ problem }: CommentSectionProps) => {
+  const { data: session } = useSession()
+  const url = problem ? `/api/comment?problemId=${problem.id}` : null
   const [newComment, setNewComment] = useState('')
+  const { data: { comments = [] } = {}, mutate } = useSWR<{
+    comments: Comment[]
+  }>(url, async (url: string) => {
+    const response = await fetch(url)
+    return await response.json()
+  })
 
   const handleCommentChange = (e: any) => {
     setNewComment(e.target.value)
   }
 
-  const handleAddComment = () => {
-    // 여기에서 서버에 새로운 댓글을 저장하는 로직을 추가해야 합니다.
-    // 새로운 댓글을 저장한 후, comments 상태를 업데이트하면 됩니다.
-    // 예: setComments([...comments, { id: generateUniqueId(), text: newComment }]);
+  const handleAddComment = async () => {
     setNewComment('')
+    const response = await fetch('/api/comment', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        user: session?.user,
+        problem: problem,
+        content: newComment,
+      }),
+    })
+    mutate()
   }
 
   return (
@@ -42,24 +58,24 @@ const CommentSection = ({}) => {
             댓글 등록
           </button>
         </div>
-        {comments.map((comment) => (
+        {comments?.map((comment) => (
           <div
             className="flex flex-col border-zinc-500 border-b last:border-b-0 p-2"
             key={comment.id}
           >
             <div className="flex items-center text-xs gap-2">
               <button className="p-1 bg-fuchsia-200 rounded-lg cursor-pointer">
-                {comment.user}
+                {comment.user?.nickname}
               </button>
-              {comment.createAt}
+              {formatDate(comment.createdAt)}
             </div>
-            <div className="flex py-2">{comment.text}</div>
+            <div className="flex py-2">{comment.content}</div>
             <div className="flex gap-3">
               <button className="flex text-xs p-1 border-2 rounded border-sky-400 cursor-pointer hover:bg-sky-400 hover:text-white">
-                추천 6
+                추천 {comment.likes}
               </button>
               <button className="flex text-xs p-1 border-2 rounded border-red-400 cursor-pointer hover:bg-red-400 hover:text-white">
-                비추천 8
+                비추천 {comment.dislikes}
               </button>
             </div>
           </div>

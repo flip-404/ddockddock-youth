@@ -36,7 +36,7 @@ export default function Exam({ params: { workbookId } }: ExamProps) {
     },
   )
 
-  console.log('workbook', workbook)
+  console.log('테슽흐', workbook?.problems[currentIndex])
 
   const handdlePrev = () => {
     if (currentIndex > 0) setCurrentIndex(currentIndex - 1)
@@ -90,7 +90,10 @@ export default function Exam({ params: { workbookId } }: ExamProps) {
         </div>
         {tab.type === COMMENT ? (
           <div className="flex w-3/4 h-2/5 overflow-y-scroll">
-            <CommentSection />
+            <CommentSection
+              comments={workbook.problems[currentIndex].comments}
+              problem={workbook.problems[currentIndex]}
+            />
           </div>
         ) : (
           <div className="flex w-3/4 h-2/5 overflow-y-scroll">

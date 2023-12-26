@@ -1,3 +1,4 @@
+// Prisma Client Types
 type User = {
   id: number
   email: string
@@ -8,6 +9,18 @@ type User = {
   updatedAt: Date
   tokens: Token[]
   workbooks: Workbook[]
+  comments: Comment[]
+  Bookmark: Bookmark[]
+}
+
+type Bookmark = {
+  id: number
+  user: User
+  userId: number
+  workbook: Workbook
+  workbookId: number
+  createdAt: Date
+  updatedAt: Date
 }
 
 type Token = {
@@ -19,6 +32,12 @@ type Token = {
   updatedAt: Date
 }
 
+type Category = {
+  id: number
+  name: string
+  workbooks: Workbook[]
+}
+
 type Workbook = {
   id: number
   title: string
@@ -27,6 +46,9 @@ type Workbook = {
   authorId: number
   problems: Problem[]
   createdAt: Date
+  category?: Category | null
+  categoryId?: number | null
+  Bookmark: Bookmark[]
 }
 
 type Problem = {
@@ -35,6 +57,20 @@ type Problem = {
   answer: string
   workbook: Workbook
   workbookId: number
+  comments: Comment[]
 }
 
-export type { User, Token, Workbook, Problem }
+type Comment = {
+  id: number
+  content: string
+  user: User
+  userId: number
+  problem: Problem
+  problemId: number
+  likes: number
+  dislikes: number
+  createdAt: Date
+  updatedAt: Date
+}
+
+export type { Category, User, Token, Workbook, Problem, Comment }
