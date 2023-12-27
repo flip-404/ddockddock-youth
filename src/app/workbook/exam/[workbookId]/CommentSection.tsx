@@ -3,6 +3,8 @@ import type { Comment, Problem } from '@/types/types'
 import { formatDate } from '@/app/utils/formatData'
 import { useSession } from 'next-auth/react'
 import useSWR from 'swr'
+import { DisLike, Like, User } from '@prisma/client'
+import cls from '@/app/utils/cls'
 
 type CommentSectionProps = {
   problem: Problem
@@ -13,7 +15,7 @@ const CommentSection = ({ problem }: CommentSectionProps) => {
   const { data: session } = useSession()
   const url = problem ? `/api/comment?problemId=${problem.id}` : null
   const [newComment, setNewComment] = useState('')
-  const { data: { comments = [] } = {}, mutate } = useSWR<{
+  const { data: { comments = [] } = {}, mutate: mutateComment } = useSWR<{
     comments: Comment[]
   }>(url, async (url: string) => {
     const response = await fetch(url)
@@ -37,7 +39,22 @@ const CommentSection = ({ problem }: CommentSectionProps) => {
         content: newComment,
       }),
     })
-    mutate()
+    mutateComment()
+  }
+
+  const handdleVoteComment = async (commentId: number, voteType: string) => {
+    const response = await fetch('/api/vote', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: session?.user.id,
+        commentId,
+        voteType,
+      }),
+    })
+    mutateComment()
   }
 
   return (
@@ -71,11 +88,35 @@ const CommentSection = ({ problem }: CommentSectionProps) => {
             </div>
             <div className="flex py-2">{comment.content}</div>
             <div className="flex gap-3">
-              <button className="flex text-xs p-1 border-2 rounded border-sky-400 cursor-pointer hover:bg-sky-400 hover:text-white">
-                추천 {comment.likes}
+              <button
+                onClick={() => {
+                  handdleVoteComment(comment.id, 'like')
+                }}
+                className={cls(
+                  comment.like.some(
+                    (like: Like) => like.userId === session?.user.id,
+                  )
+                    ? 'bg-sky-400 text-white'
+                    : '',
+                  'flex text-xs p-1 border-2 rounded border-sky-400 cursor-pointer hover:bg-sky-400 hover:text-white',
+                )}
+              >
+                추천 {comment.like.length}
               </button>
-              <button className="flex text-xs p-1 border-2 rounded border-red-400 cursor-pointer hover:bg-red-400 hover:text-white">
-                비추천 {comment.dislikes}
+              <button
+                onClick={() => {
+                  handdleVoteComment(comment.id, 'disLike')
+                }}
+                className={cls(
+                  comment.dislike.some(
+                    (dislike: DisLike) => dislike.userId === session?.user.id,
+                  )
+                    ? 'bg-red-400 text-white'
+                    : '',
+                  'flex text-xs p-1 border-2 rounded border-red-400 cursor-pointer hover:bg-red-400 hover:text-white',
+                )}
+              >
+                비추천 {comment.dislike.length}
               </button>
             </div>
           </div>

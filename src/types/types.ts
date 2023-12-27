@@ -67,8 +67,8 @@ type Comment = {
   userId: number
   problem: Problem
   problemId: number
-  likes: number
-  dislikes: number
+  like: Array<any>
+  dislike: Array<any>
   createdAt: Date
   updatedAt: Date
 }

@@ -3,11 +3,12 @@ const prisma = new PrismaClient()
 
 async function seed() {
   // Delete data from dependent tables first
-  await prisma.token.deleteMany({})
+
   await prisma.comment.deleteMany({})
   await prisma.bookmark.deleteMany({})
   await prisma.problem.deleteMany({})
   await prisma.workbook.deleteMany({})
+  await prisma.token.deleteMany({})
 
   // Delete data from independent tables
   await prisma.category.deleteMany({})

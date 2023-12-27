@@ -24,6 +24,8 @@ model User {
   workbooks   Workbook[]
   comments    Comment[]
   Bookmark    Bookmark[]
+  like        Like[]
+  dislike     DisLike[]
 }
 
 model Bookmark {
@@ -85,17 +87,43 @@ model Problem {
 }
 
 model Comment {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   content   String
-  user      User     @relation(fields: [userId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
   userId    Int
-  problem   Problem  @relation(fields: [problemId], references: [id])
+  problem   Problem   @relation(fields: [problemId], references: [id])
   problemId Int
-  likes     Int      @default(0)
-  dislikes  Int      @default(0)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  like      Like[]
+  dislike   DisLike[]
+
+  @@index([userId])
+  @@index([problemId])
+}
+
+model Like {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([userId])
-  @@index([problemId])
+  @@index([commentId])
+}
+
+model DisLike {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([commentId])
 }

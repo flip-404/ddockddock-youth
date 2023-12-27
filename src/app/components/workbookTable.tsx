@@ -31,13 +31,13 @@ export default function WorkbookTable({
             return (
               <tr className="table w-full" key={idx}>
                 <td className="text-center w-1/6 relative">
-                  <Image
+                  {/* <Image
                     src="/bookmark_icon.svg"
                     alt="Bookmark Image"
                     width={15}
                     height={15}
                     className="absolute top-1/2 left-1/3 -translate-x-1/2 -translate-y-1/2"
-                  />
+                  /> */}
                   {idx + 1}
                 </td>
                 <td

@@ -21,7 +21,7 @@ export async function GET(request: Request) {
     where: {
       problemId: +problemId,
     },
-    include: { user: true },
+    include: { user: true, like: true, dislike: true },
   })
 
   console.log(comments)
